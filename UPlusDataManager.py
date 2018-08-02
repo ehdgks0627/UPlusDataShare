@@ -55,7 +55,7 @@ class UPlusDataManager:
 
         return True
 
-    def auth_sms(self, sender):
+    def auth_req_sms(self, sender):
         """SMS 인증을 요청합니다."""
         self.session.headers["Referer"] = "https://www.uplus.co.kr/sys/comm/RetrieveAuthSMSPage.hpi"
         data = {
@@ -71,10 +71,11 @@ class UPlusDataManager:
         response = self.session.post(self.auth_req_url, data=data)
         self.dump_response(response)
 
-        auth_number = input("인증번호 입력 : ")
+        return True
 
+    def auth_sms(self, sender, auth_code):
         data = {
-            "authNum": auth_number,
+            "authNum": auth_code,
             "selcCom": "undefined",
             "ctnNo": sender,
             "authSeq": "undefined",
@@ -115,8 +116,8 @@ class UPlusDataManager:
         return True
 
 
-    def send_data(self, sender, receiver, cnt):
-        self.auth_sms(sender)
+    def send_data(self, sender, receiver, cnt, auth_code):
+        self.auth_sms(sender, auth_code)
         self.gift(sender, receiver, cnt)
 
     def dump_response(self, response, dump_data=True):
